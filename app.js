@@ -1,9 +1,9 @@
-var createError = require('http-errors');
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -18,7 +18,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
     // only provide error in development
-    var error = { message: err.message };
+    const error = { message: err.message };
 
     if (req.app.get('env') === 'development') {
         error.status = err.status;
