@@ -11,7 +11,7 @@ class HealthStatusProvider {
         try {
             const serviceResponse = await this.http.get(this.target.url);
 
-            const originalStatus = this.getResponseStatus(serviceResponse);
+            const originalStatus = this._getResponseStatus(serviceResponse);
             const isHealthy = originalStatus === this.target.healthValue;
 
             status = HealthStatusProvider.getUniformHealthStatus(isHealthy);
@@ -24,22 +24,27 @@ class HealthStatusProvider {
             };
         }
 
-        return {
-            status: status,
-            error: error
-        };
+        const result = { status: status };
+        if (error) result.error = error;
+
+        return result;
     };
 
-    getResponseStatus(response){
+    /* private */
+    _getResponseStatus(response) {
         const statusNavigationProperties = this.target.statusField.split('.');
         let status = response.data;
 
         for (let property of statusNavigationProperties) {
+            if (!status.hasOwnProperty(property)) {
+                throw new Error(`Expected property "${property}" does not exist in response.`);
+            }
+
             status = status[property];
         }
 
         if (status === null || status === undefined)
-            throw new Error('Could not get status from response');
+            throw new Error('Health status is `null` or `undefined`');
 
         return status;
     }
