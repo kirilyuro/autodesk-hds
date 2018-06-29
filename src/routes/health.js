@@ -4,11 +4,21 @@ const router = express.Router();
 const config = require('../../config/config.json');
 const bl = require('../bl');
 const monitor = new bl.AggregateHealthMonitor(config.services, httpProvider);
+const availabilityStorage = require('../storage');
 
-router.get('/', async (req, res, next) => {
+router.get('/status', async (req, res, next) => {
     try {
         const healthStatus = await monitor.getServicesStatus();
         res.json(healthStatus);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+router.get('/availability', async (req, res, next) => {
+    try {
+        res.json(availabilityStorage);
     }
     catch (error) {
         next(error);

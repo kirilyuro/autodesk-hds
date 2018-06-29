@@ -1,4 +1,5 @@
 class AggregateHealthMonitor {
+
     constructor(services, httpProvider) {
         this.monitoredServices = services.map(service => ({
             config: service,
@@ -70,6 +71,29 @@ class HealthMonitor {
     }
 }
 
+class AvailabilityMonitor {
+
+    constructor(targetConfig, httpProvider, storage) {
+        this.target = targetConfig;
+        this.healthMonitor = new HealthMonitor(targetConfig, httpProvider);
+        this.monitorInterval = null;
+        this.storage = storage;
+    }
+
+    start() {
+        this.monitorInterval = setInterval(async () => {
+            const startTime = Date.now();
+            const statusResult = await this.healthMonitor.getServiceStatus();
+            this.storage.push({
+                service: this.target.id,
+                time: new Date(startTime),
+                result: statusResult
+            });
+        }, 1000 * 5)   // 1min
+    }
+}
+
 module.exports = {
-    AggregateHealthMonitor: AggregateHealthMonitor
+    AggregateHealthMonitor: AggregateHealthMonitor,
+    AvailabilityMonitor: AvailabilityMonitor
 };

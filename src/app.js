@@ -37,4 +37,20 @@ app.use(function(err, req, res) {
     res.json(error);
 });
 
+const AvailabilityMonitor = require('./bl').AvailabilityMonitor;
+const config = require('../config/config');
+const httpProvider = require('axios');
+const availabilityStorage = require('./storage');
+
+for (let service of config.services) {
+    availabilityStorage[service.id] = [];
+
+    const availabilityMonitor  = new AvailabilityMonitor(
+        service, httpProvider, availabilityStorage[service.id]
+    );
+
+    availabilityMonitor.start();
+}
+
+
 module.exports = app;

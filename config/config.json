@@ -1,16 +1,19 @@
 {
   "services": [
     {
+      "id": "bim360-dm",
       "url": "https://bim360dm-dev.autodesk.com/health?self=true",
       "statusField": "status.overall",
       "healthValue": "GOOD"
     },
     {
+      "id": "Command Processor",
       "url": "https://commands.bim360dm-dev.autodesk.com/health",
       "statusField": "status.overall",
       "healthValue": "OK"
     },
     {
+      "id": "360-staging",
       "url": "https://360-staging.autodesk.com/health",
       "statusField": "HealthCheck.status",
       "healthValue": "Good"
