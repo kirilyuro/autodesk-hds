@@ -1,14 +1,10 @@
 const express = require('express');
-const httpProvider = require('axios');
 const router = express.Router();
-const config = require('../../config/config.json');
-const bl = require('../bl');
-const monitor = new bl.AggregateHealthMonitor(config.services, httpProvider);
-const availabilityStorage = require('../storage');
+const app = require('../core');
 
 router.get('/status', async (req, res, next) => {
     try {
-        const healthStatus = await monitor.getServicesStatus();
+        const healthStatus = await app.healthStatusProvider.getServicesStatus();
         res.json(healthStatus);
     }
     catch (error) {
@@ -18,7 +14,7 @@ router.get('/status', async (req, res, next) => {
 
 router.get('/availability', async (req, res, next) => {
     try {
-        res.json(availabilityStorage);
+        res.json(app.storage);
     }
     catch (error) {
         next(error);
