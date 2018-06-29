@@ -89,7 +89,7 @@ class AvailabilityMonitor {
                 time: new Date(startTime),
                 result: statusResult
             });
-        }, 1000 * 5)   // 1min
+        }, 1000 * 60)   // 1 minute
     }
 }
 
