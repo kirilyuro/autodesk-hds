@@ -1,7 +1,7 @@
 const express = require('express');
 const httpProvider = require('axios');
 const router = express.Router();
-const config = require('../config/config.json');
+const config = require('../../config/config.json');
 const bl = require('../bl');
 const monitor = new bl.AggregateHealthMonitor(config.services, httpProvider);
 
