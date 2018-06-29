@@ -5,7 +5,6 @@ const logger = require('morgan');
 
 require('./core').initializeApplication();
 
-const testRouter = require('./routes/test');
 const healthRouter = require('./routes/health');
 
 const app = express();
@@ -15,7 +14,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/test', testRouter);
 app.use('/health', healthRouter);
 
 // catch 404 and forward to error handler
