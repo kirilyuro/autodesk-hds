@@ -12,37 +12,43 @@ class AggregateHealthMonitor {
 
         const healthResponses = await Promise.all(serviceHealthPromises);
 
-        return healthResponses.map((status, i) => ({
+        return healthResponses.map((healthStatus, i) => ({
             service: this.monitoredServices[i].config.url,
-            status: status
+            health: healthStatus
         }));
     }
 }
 
 class HealthMonitor {
+
     constructor(serviceConfig, httpProvider) {
         this.target = serviceConfig;
         this.http = httpProvider;
     }
 
     async getServiceStatus() {
+        let status, error;
+
         try {
             const serviceResponse = await this.http.get(this.target.url);
 
-            const status = this.getResponseStatus(serviceResponse);
+            const originalStatus = this.getResponseStatus(serviceResponse);
+            const isHealthy = originalStatus === this.target.healthValue;
 
-            // TODO: Map to uniform status value
-            return status;
+            status = HealthMonitor.getUniformHealthStatus(isHealthy);
         }
-        catch (error) {
-            return {
-                status: "Error",
-                error: {
-                    message: error.message,
-                    stack: error.stack
-                }
+        catch (err) {
+            status = HealthMonitor.getUniformHealthStatus(false);
+            error = {
+                message: err.message,
+                stack: err.stack
             };
         }
+
+        return {
+            status: status,
+            error: error
+        };
     };
 
     getResponseStatus(response){
@@ -57,6 +63,10 @@ class HealthMonitor {
             throw new Error('Could not get status from response');
 
         return status;
+    }
+
+    static getUniformHealthStatus(isHealthy) {
+        return isHealthy ? 'GOOD' : 'BAD';
     }
 }
 
