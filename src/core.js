@@ -1,4 +1,6 @@
 const httpProvider = require('axios');
+require('./axios-config').customizeAxios();
+
 const config = require('../config/config');
 const storage = require('./storage');
 

@@ -2,7 +2,11 @@ const axios = require('axios');
 const xml = require('xml2js');
 const promisify = require('util').promisify;
 
-module.exports = () => {
+module.exports = {
+    customizeAxios: customizeAxios
+};
+
+function customizeAxios() {
     // Configure parsing of XML responses to JSON
     axios.interceptors.response.use(
         async response => {
@@ -17,4 +21,4 @@ module.exports = () => {
             return response;
         }
     );
-};
+}
