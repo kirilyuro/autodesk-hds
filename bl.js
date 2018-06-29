@@ -27,10 +27,7 @@ class HealthMonitor {
 
     async getServiceStatus() {
         try {
-            const serviceResponse = await this.http.get({
-                url: this.target.url,
-                json: true
-            });
+            const serviceResponse = await this.http.get(this.target.url);
 
             const status = this.getResponseStatus(serviceResponse);
 
@@ -50,7 +47,7 @@ class HealthMonitor {
 
     getResponseStatus(response){
         const statusNavigationProperties = this.target.statusField.split('.');
-        let status = response;
+        let status = response.data;
 
         for (let property of statusNavigationProperties) {
             status = status[property];

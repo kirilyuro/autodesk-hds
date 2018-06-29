@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+require('./axios-config')();
 
 const testRouter = require('./routes/test');
 const healthRouter = require('./routes/health');

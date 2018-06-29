@@ -1,9 +1,9 @@
 const express = require('express');
-const request = require('request-promise-native');
+const httpProvider = require('axios');
 const router = express.Router();
 const config = require('../config/config.json');
 const bl = require('../bl');
-const monitor = new bl.AggregateHealthMonitor(config.services, request);
+const monitor = new bl.AggregateHealthMonitor(config.services, httpProvider);
 
 router.get('/', async (req, res, next) => {
     try {
