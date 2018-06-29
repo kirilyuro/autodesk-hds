@@ -1,0 +1,19 @@
+{
+  "services": [
+    {
+      "url": "https://bim360dm-dev.autodesk.com/health?self=true",
+      "statusField": "status.overall",
+      "healthValue": "GOOD"
+    },
+    {
+      "url": "https://commands.bim360dm-dev.autodesk.com/health",
+      "statusField": "status.overall",
+      "healthValue": "OK"
+    },
+    {
+      "url": "https://360-staging.autodesk.com/health",
+      "statusField": "status",
+      "healthValue": "Good"
+    }
+  ]
+}
