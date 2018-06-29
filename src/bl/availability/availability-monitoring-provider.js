@@ -1,19 +1,18 @@
 const AvailabilityMonitor = require('./availability-monitor');
-const HealthMonitor = require('../health-status/health-monitor');
 
 class AvailabilityMonitoringProvider {
-    constructor(services, httpProvider, storage) {
+    constructor(services, httpProvider, healthStatusRepository) {
         this.services = services;
         this.httpProvider = httpProvider;
-        this.storage = storage;
+        this.healthStatusRepository = healthStatusRepository;
     }
 
     startAvailabilityMonitoring() {
         for (let service of this.services) {
-            this.storage[service.id] = [];
+            this.healthStatusRepository.getOrCreateCollection(service.id);
 
             const availabilityMonitor  = new AvailabilityMonitor(
-                service, this.httpProvider, this.storage[service.id]
+                service, this.httpProvider, this.healthStatusRepository
             );
 
             availabilityMonitor.start();
@@ -21,6 +20,7 @@ class AvailabilityMonitoringProvider {
     }
 
     getAvailabilityStatus(toTime) {
+        toTime = toTime.getTime();
         const fromTime = toTime - 1000 * 60 * 60;   // 1 hour
         const status = {};
         for (let service of this.services) {
@@ -34,18 +34,15 @@ class AvailabilityMonitoringProvider {
     }
 
     computeServiceAvailabilityPercentage(service, fromTime, toTime) {
-        const totalProbes = this.storage[service.id]
-            .filter(result => {
-                const resultTime = result.time.getTime();
-                return resultTime >= fromTime && resultTime <= toTime;
-            });
+        const healthStatistics =
+            this.healthStatusRepository.getHealthStatistics(
+                service.id,
+                {
+                    from: fromTime,
+                    to: toTime
+                });
 
-        const goodProbes = totalProbes.filter(
-            probe =>
-                probe.result.status === HealthMonitor.getUniformHealthStatus(true)
-        );
-
-        return 100 * goodProbes.length / totalProbes.length;
+        return 100 * healthStatistics.good / healthStatistics.total;
     }
 }
 

@@ -2,10 +2,11 @@ const httpProvider = require('axios');
 require('./axios-config').customizeAxios();
 
 const config = require('../config/config');
-const storage = require('./storage');
+const HealthStatusRepository = require('./bl/health-status-repository');
+const healthStatusRepository = new HealthStatusRepository();
 
 const AvailabilityMonitoringProvider = require('./bl/availability/availability-monitoring-provider');
-const availabilityProvider = new AvailabilityMonitoringProvider(config.services, httpProvider, storage);
+const availabilityProvider = new AvailabilityMonitoringProvider(config.services, httpProvider, healthStatusRepository);
 
 const AggregateHealthMonitor = require('./bl/health-status/aggregate-health-monitor');
 const healthMonitor = new AggregateHealthMonitor(config.services, httpProvider);
@@ -13,7 +14,7 @@ const healthMonitor = new AggregateHealthMonitor(config.services, httpProvider);
 module.exports = {
     httpProvider: httpProvider,
     appConfig: config,
-    storage: storage,
+    healthStatusRepository: healthStatusRepository,
     healthStatusProvider: healthMonitor,
     availabilityProvider: availabilityProvider,
     initializeApplication: initializeApp

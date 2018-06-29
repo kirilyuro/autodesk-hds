@@ -2,11 +2,11 @@ const HealthMonitor = require('../health-status/health-monitor');
 
 class AvailabilityMonitor {
 
-    constructor(targetConfig, httpProvider, storage) {
+    constructor(targetConfig, httpProvider, healthStatusRepository) {
         this.target = targetConfig;
         this.healthMonitor = new HealthMonitor(targetConfig, httpProvider);
         this.monitorInterval = null;
-        this.storage = storage;
+        this.healthStatusRepository = healthStatusRepository;
     }
 
     start() {
@@ -20,13 +20,23 @@ class AvailabilityMonitor {
     }
 
     async logServiceStatus() {
+        // TODO: Handle errors
         const startTime = Date.now();
-        const statusResult = await this.healthMonitor.getServiceStatus();
-        this.storage.push({
+        const statusResult =
+            await this.healthMonitor.getServiceStatus();
+
+        const storageDocument = {
             service: this.target.id,
             time: new Date(startTime),
-            result: statusResult
-        });
+            status: statusResult.status
+        };
+
+        if (statusResult.error)
+            storageDocument.error = statusResult.error;
+
+        this.healthStatusRepository.insert(
+            this.target.id, storageDocument
+        );
     }
 }
 
