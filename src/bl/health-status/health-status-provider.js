@@ -1,4 +1,4 @@
-class HealthMonitor {
+class HealthStatusProvider {
 
     constructor(serviceConfig, httpProvider) {
         this.target = serviceConfig;
@@ -14,10 +14,10 @@ class HealthMonitor {
             const originalStatus = this.getResponseStatus(serviceResponse);
             const isHealthy = originalStatus === this.target.healthValue;
 
-            status = HealthMonitor.getUniformHealthStatus(isHealthy);
+            status = HealthStatusProvider.getUniformHealthStatus(isHealthy);
         }
         catch (err) {
-            status = HealthMonitor.getUniformHealthStatus(false);
+            status = HealthStatusProvider.getUniformHealthStatus(false);
             error = {
                 message: err.message,
                 stack: err.stack
@@ -49,4 +49,4 @@ class HealthMonitor {
     }
 }
 
-module.exports = HealthMonitor;
+module.exports = HealthStatusProvider;

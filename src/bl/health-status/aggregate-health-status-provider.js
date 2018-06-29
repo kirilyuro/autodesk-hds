@@ -1,11 +1,11 @@
-const HealthMonitor = require('./health-monitor');
+const HealthStatusProvider = require('./health-status-provider');
 
-class AggregateHealthMonitor {
+class AggregateHealthStatusProvider {
 
     constructor(services, httpProvider) {
         this.monitoredServices = services.map(service => ({
             config: service,
-            monitor: new HealthMonitor(service, httpProvider)
+            monitor: new HealthStatusProvider(service, httpProvider)
         }));
     }
 
@@ -22,4 +22,4 @@ class AggregateHealthMonitor {
     }
 }
 
-module.exports = AggregateHealthMonitor;
+module.exports = AggregateHealthStatusProvider;

@@ -1,9 +1,9 @@
-const loki = require('lokijs');
-const HealthMonitor = require('./health-status/health-monitor');
+const lokiDb = require('lokijs');
+const HealthStatusProvider = require('./health-status/health-status-provider');
 
 class HealthStatusRepository {
     constructor() {
-        this.db = new loki('HealthHistory');
+        this.db = new lokiDb('HealthHistory');
         this.indices = ['time', 'status'];
     }
 
@@ -22,7 +22,7 @@ class HealthStatusRepository {
             .find({ time: { $between: [ timeRange.from, timeRange.to ]}});
 
         const goodProbesQuery = totalProbesQuery
-            .find({ status: { $eq: HealthMonitor.getUniformHealthStatus(true) } });
+            .find({ status: { $eq: HealthStatusProvider.getUniformHealthStatus(true) } });
 
         return {
             total: totalProbesQuery.count(),

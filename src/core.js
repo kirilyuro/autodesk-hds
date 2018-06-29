@@ -6,20 +6,21 @@ const HealthStatusRepository = require('./bl/health-status-repository');
 const healthStatusRepository = new HealthStatusRepository();
 
 const AvailabilityMonitoringProvider = require('./bl/availability/availability-monitoring-provider');
-const availabilityProvider = new AvailabilityMonitoringProvider(config.services, httpProvider, healthStatusRepository);
+const availabilityMonitoringProvider =
+    new AvailabilityMonitoringProvider(config.services, httpProvider, healthStatusRepository);
 
-const AggregateHealthMonitor = require('./bl/health-status/aggregate-health-monitor');
-const healthMonitor = new AggregateHealthMonitor(config.services, httpProvider);
+const AggregateHealthStatusProvider = require('./bl/health-status/aggregate-health-status-provider');
+const healthStatusProvider = new AggregateHealthStatusProvider(config.services, httpProvider);
 
 module.exports = {
     httpProvider: httpProvider,
     appConfig: config,
     healthStatusRepository: healthStatusRepository,
-    healthStatusProvider: healthMonitor,
-    availabilityProvider: availabilityProvider,
+    healthStatusProvider: healthStatusProvider,
+    availabilityProvider: availabilityMonitoringProvider,
     initializeApplication: initializeApp
 };
 
 function initializeApp() {
-    availabilityProvider.startAvailabilityMonitoring();
+    availabilityMonitoringProvider.startAvailabilityMonitoring();
 }

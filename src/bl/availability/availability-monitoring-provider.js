@@ -1,4 +1,4 @@
-const AvailabilityMonitor = require('./availability-monitor');
+const TimedHealthStatusLogger = require('../health-status/timed-health-status-logger');
 
 class AvailabilityMonitoringProvider {
     constructor(services, httpProvider, healthStatusRepository) {
@@ -12,7 +12,7 @@ class AvailabilityMonitoringProvider {
         for (let service of this.services) {
             this.healthStatusRepository.getOrCreateCollection(service.id);
 
-            const monitor  = new AvailabilityMonitor(
+            const monitor  = new TimedHealthStatusLogger(
                 service, this.httpProvider, this.healthStatusRepository
             );
 
@@ -27,7 +27,7 @@ class AvailabilityMonitoringProvider {
         const status = {};
         for (let service of this.services) {
             status[service.id] =
-                this.computeServiceAvailabilityPercentage(
+                this.computeServiceAvailabilityStatistics(
                     service, fromTime, toTime
                 );
         }
@@ -35,7 +35,7 @@ class AvailabilityMonitoringProvider {
         return status;
     }
 
-    computeServiceAvailabilityPercentage(service, fromTime, toTime) {
+    computeServiceAvailabilityStatistics(service, fromTime, toTime) {
         const healthStatistics =
             this.healthStatusRepository.getHealthStatistics(
                 service.id,
@@ -44,7 +44,13 @@ class AvailabilityMonitoringProvider {
                     to: toTime
                 });
 
-        return 100 * healthStatistics.good / healthStatistics.total;
+        const availabilityPercentage = 100 * healthStatistics.good / healthStatistics.total;
+
+        return {
+            percentage: availabilityPercentage,
+            total: healthStatistics.total,
+            good: healthStatistics.good
+        };
     }
 }
 

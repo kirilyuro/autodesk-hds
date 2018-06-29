@@ -1,10 +1,10 @@
-const HealthMonitor = require('../health-status/health-monitor');
+const HealthStatusProvider = require('./health-status-provider');
 
-class AvailabilityMonitor {
+class TimedHealthStatusLogger {
 
     constructor(targetConfig, httpProvider, healthStatusRepository) {
         this.target = targetConfig;
-        this.healthMonitor = new HealthMonitor(targetConfig, httpProvider);
+        this.healthStatusProvider = new HealthStatusProvider(targetConfig, httpProvider);
         this.monitorInterval = null;
         this.healthStatusRepository = healthStatusRepository;
     }
@@ -23,7 +23,7 @@ class AvailabilityMonitor {
         // TODO: Handle errors
         const startTime = Date.now();
         const statusResult =
-            await this.healthMonitor.getServiceStatus();
+            await this.healthStatusProvider.getServiceStatus();
 
         const storageDocument = {
             service: this.target.id,
@@ -40,4 +40,4 @@ class AvailabilityMonitor {
     }
 }
 
-module.exports = AvailabilityMonitor;
+module.exports = TimedHealthStatusLogger;
