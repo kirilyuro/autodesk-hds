@@ -4,7 +4,9 @@ const app = require('../core');
 
 router.get('/status', async (req, res, next) => {
     try {
-        const healthStatus = await app.healthStatusProvider.getServicesStatus();
+        const healthStatus =
+            await app.healthStatusProvider.getServicesStatus();
+
         res.json(healthStatus);
     }
     catch (error) {
@@ -14,7 +16,11 @@ router.get('/status', async (req, res, next) => {
 
 router.get('/availability', async (req, res, next) => {
     try {
-        res.json(app.storage);
+        const requestTime = new Date();
+        const availabilityStatus =
+            app.availabilityProvider.getAvailabilityStatus(requestTime);
+
+        res.json(availabilityStatus);
     }
     catch (error) {
         next(error);
