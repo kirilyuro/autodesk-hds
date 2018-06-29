@@ -5,17 +5,19 @@ class AvailabilityMonitoringProvider {
         this.services = services;
         this.httpProvider = httpProvider;
         this.healthStatusRepository = healthStatusRepository;
+        this.monitors = [];
     }
 
     startAvailabilityMonitoring() {
         for (let service of this.services) {
             this.healthStatusRepository.getOrCreateCollection(service.id);
 
-            const availabilityMonitor  = new AvailabilityMonitor(
+            const monitor  = new AvailabilityMonitor(
                 service, this.httpProvider, this.healthStatusRepository
             );
 
-            availabilityMonitor.start();
+            this.monitors.push(monitor);
+            monitor.start();
         }
     }
 
