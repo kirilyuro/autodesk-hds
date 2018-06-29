@@ -81,19 +81,28 @@ class AvailabilityMonitor {
     }
 
     start() {
-        this.monitorInterval = setInterval(async () => {
-            const startTime = Date.now();
-            const statusResult = await this.healthMonitor.getServiceStatus();
-            this.storage.push({
-                service: this.target.id,
-                time: new Date(startTime),
-                result: statusResult
-            });
-        }, 1000 * 60)   // 1 minute
+        // Call before setInterval to start immediately.
+        // (Not `await`ing is intended here)
+        this.logServiceStatus();
+        this.monitorInterval = setInterval(
+            this.logServiceStatus.bind(this),
+            1000 * 60,  // 1 minute
+        );
+    }
+
+    async logServiceStatus() {
+        const startTime = Date.now();
+        const statusResult = await this.healthMonitor.getServiceStatus();
+        this.storage.push({
+            service: this.target.id,
+            time: new Date(startTime),
+            result: statusResult
+        });
     }
 }
 
 module.exports = {
     AggregateHealthMonitor: AggregateHealthMonitor,
+    HealthMonitor: HealthMonitor,
     AvailabilityMonitor: AvailabilityMonitor
 };
