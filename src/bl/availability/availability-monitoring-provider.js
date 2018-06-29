@@ -1,6 +1,5 @@
-const bl = require('../bl');
-const AvailabilityMonitor = bl.AvailabilityMonitor;
-const HealthMonitor = bl.HealthMonitor;
+const AvailabilityMonitor = require('./availability-monitor');
+const HealthMonitor = require('../health-status/health-monitor');
 
 class AvailabilityMonitoringProvider {
     constructor(services, httpProvider, storage) {

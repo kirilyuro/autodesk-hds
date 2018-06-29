@@ -4,11 +4,11 @@ require('./axios-config').customizeAxios();
 const config = require('../config/config');
 const storage = require('./storage');
 
-const AvailabilityMonitoringProvider = require('./availability/availability-monitoring-provider');
+const AvailabilityMonitoringProvider = require('./bl/availability/availability-monitoring-provider');
 const availabilityProvider = new AvailabilityMonitoringProvider(config.services, httpProvider, storage);
 
-const bl = require('./bl');
-const healthMonitor = new bl.AggregateHealthMonitor(config.services, httpProvider);
+const AggregateHealthMonitor = require('./bl/health-status/aggregate-health-monitor');
+const healthMonitor = new AggregateHealthMonitor(config.services, httpProvider);
 
 module.exports = {
     httpProvider: httpProvider,
