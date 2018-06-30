@@ -6,7 +6,8 @@
 
 ## Running the service ##
 1) `npm start`
-2) API routes (service starts by default on port 3000):
+2) API routes (service starts by default on port 3000):  
+
 Returns current health status of monitored services:
 ```
 http://localhost:3000/health/status
