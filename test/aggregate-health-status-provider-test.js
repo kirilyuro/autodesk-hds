@@ -121,7 +121,9 @@ describe('AggregateHealthStatusProvider', function() {
 
             assert.equal(statuses.length, this.servicesConfig.length);
             for (let service of this.servicesConfig) {
-                assert(_(statuses).some({ service: service.url }));
+                assert(_(statuses).some(
+                    status => status.service.name === service.id
+                ));
             }
         });
 
@@ -138,8 +140,9 @@ describe('AggregateHealthStatusProvider', function() {
             const statuses = await aggregateProvider.initialize().getServicesStatus();
 
             for (let service of this.servicesConfig) {
-                const actualServiceStatus =
-                    _(statuses).find({ service: service.url }).health.status;
+                const actualServiceStatus = _(statuses).find(
+                    status => status.service.name === service.id
+                ).health.status;
 
                 assert.equal(actualServiceStatus, service.healthValue);
             }

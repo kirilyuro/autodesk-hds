@@ -28,10 +28,16 @@ class AggregateHealthStatusProvider {
 
         const healthResponses = await Promise.all(serviceHealthPromises);
 
-        return healthResponses.map((healthStatus, i) => ({
-            service: this.monitoredServices[i].config.url,
-            health: healthStatus
-        }));
+        return healthResponses.map((healthStatus, i) => {
+            const service = this.monitoredServices[i].config;
+            return {
+                service: {
+                    name: service.id,
+                    url: service.url
+                },
+                health: healthStatus
+            }
+        });
     }
 
     /* private */

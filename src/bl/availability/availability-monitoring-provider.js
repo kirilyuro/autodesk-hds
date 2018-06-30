@@ -24,15 +24,21 @@ class AvailabilityMonitoringProvider {
     getAvailabilityStatus(toTime) {
         toTime = toTime.getTime();
         const fromTime = toTime - 1000 * 60 * 60;   // 1 hour
-        const status = {};
-        for (let service of this.services) {
-            status[service.id] =
+
+        return this.services.map(service => {
+            const availabilityStatistics =
                 this.computeServiceAvailabilityStatistics(
                     service, fromTime, toTime
                 );
-        }
 
-        return status;
+            return {
+                service: {
+                    name: service.id,
+                    url: service.url
+                },
+                availability: availabilityStatistics
+            }
+        });
     }
 
     computeServiceAvailabilityStatistics(service, fromTime, toTime) {
