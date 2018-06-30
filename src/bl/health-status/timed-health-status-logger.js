@@ -4,12 +4,24 @@ class TimedHealthStatusLogger {
 
     constructor(targetConfig, httpProvider, healthStatusRepository) {
         this.target = targetConfig;
-        this.healthStatusProvider = new HealthStatusProvider(targetConfig, httpProvider);
+        this.httpProvider = httpProvider;
         this.monitorInterval = null;
         this.healthStatusRepository = healthStatusRepository;
+        this.isInitialized = false;
+    }
+
+    initialize() {
+        this.healthStatusProvider =
+            this._createHealthStatusProvider(this.target, this.httpProvider);
+
+        this.isInitialized = true;
+
+        return this;
     }
 
     start() {
+        this._ensureInitialized();
+
         // Call before setInterval to start immediately.
         // (Not `await`ing is intended here)
         this.logServiceStatus();
@@ -20,6 +32,8 @@ class TimedHealthStatusLogger {
     }
 
     async logServiceStatus() {
+        this._ensureInitialized();
+
         // TODO: Handle errors
         const startTime = Date.now();
         const statusResult =
@@ -37,6 +51,19 @@ class TimedHealthStatusLogger {
         this.healthStatusRepository.insert(
             this.target.id, storageDocument
         );
+    }
+
+    /* private */
+    _ensureInitialized() {
+        if (!this.isInitialized)
+            throw new Error(
+                `${TimedHealthStatusLogger.name} used before calling \`initialize\``
+            );
+    }
+
+    /* private */
+    _createHealthStatusProvider(service, httpProvider) {
+        return new HealthStatusProvider(service, httpProvider)
     }
 }
 

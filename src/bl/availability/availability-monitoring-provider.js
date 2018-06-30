@@ -17,7 +17,7 @@ class AvailabilityMonitoringProvider {
             );
 
             this.monitors.push(monitor);
-            monitor.start();
+            monitor.initialize().start();
         }
     }
 
