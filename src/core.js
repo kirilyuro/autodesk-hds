@@ -10,7 +10,7 @@ const availabilityMonitoringProvider =
     new AvailabilityMonitoringProvider(config.services, httpProvider, healthStatusRepository);
 
 const AggregateHealthStatusProvider = require('./bl/health-status/aggregate-health-status-provider');
-const healthStatusProvider = new AggregateHealthStatusProvider(config.services, httpProvider);
+const healthStatusProvider = new AggregateHealthStatusProvider(config.services, httpProvider).initialize();
 
 module.exports = {
     httpProvider: httpProvider,
