@@ -21,7 +21,7 @@ class AggregateHealthStatusProvider {
 
     async getServicesStatus() {
         if (!this.isInitialized)
-            throw new Error('AggregateHealthStatusProvider used before calling `initialize`');
+            throw new Error(`${AggregateHealthStatusProvider.name} used before calling \`initialize\``);
 
         const serviceHealthPromises = this.monitoredServices
             .map(service => service.monitor.getServiceStatus());
