@@ -2,7 +2,7 @@ const httpProvider = require('axios');
 require('./axios-config').customizeAxios();
 
 const config = require('../config/config');
-const HealthStatusRepository = require('./bl/health-status-repository');
+const HealthStatusRepository = require('./dal/health-status-repository');
 const healthStatusRepository = new HealthStatusRepository();
 
 const AvailabilityMonitoringProvider = require('./bl/availability/availability-monitoring-provider');

@@ -1,5 +1,5 @@
 const lokiDb = require('lokijs');
-const HealthStatusProvider = require('./health-status/health-status-provider');
+const HealthStatusProvider = require('../bl/health-status/health-status-provider');
 
 class HealthStatusRepository {
     constructor() {
